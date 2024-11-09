@@ -1,6 +1,7 @@
-export interface User{
-    username: String,
-    email: String,
-    password: String,
-    followings: User[]
+export interface User {
+  _id: string;
+  username: string;
+  email: string;
+  password: string;
+  followings: string[];
 }

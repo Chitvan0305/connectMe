@@ -4,7 +4,7 @@ import { Form, Input } from "antd";
 import { useMutation } from "@apollo/client";
 import { CREATE_NEW_USER } from "../Mutations";
 import AppLayout from "../Layout/AppLayout";
-import PrimaryButton from "../components/Button";
+import PrimaryButton from "../components/Shared/Button";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { setUser } from "../redux/slices/userSlice";
@@ -45,9 +45,9 @@ const SignUpForm: React.FC = () => {
 
     if (data?.data?.createUser) {
       const { token } = data?.data?.createUser;
-      setCookie("user_token", token, 1)
-      dispatch(setUser(data?.data?.createUser?.user))
-      navigate("/")
+      setCookie("user_token", token, 1);
+      dispatch(setUser(data?.data?.createUser?.user));
+      navigate("/");
     }
   };
 
@@ -62,7 +62,7 @@ const SignUpForm: React.FC = () => {
   };
 
   return (
-    <AppLayout isHome={false} button={headButton()}>
+    <AppLayout isHome={false} button={headButton()} isLoading={loading}>
       <div className="w-3/4 m-auto bg-white shadow-md rounded-lg p-3 mt-[150px] flex justify-center items-center">
         <Form
           name="basic"
@@ -104,8 +104,7 @@ const SignUpForm: React.FC = () => {
 
           <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
             <PrimaryButton
-              type="primary"
-              htmlType="submit"
+              type="submit"
               title="Sign up"
               className="bg-red-600 text-white p-3 rounded-lg text-center font-bold mt-4"
             />

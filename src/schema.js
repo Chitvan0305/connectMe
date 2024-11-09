@@ -34,16 +34,12 @@ const querySchema = gql`
     token: String!
   }
   
-  type UserPosts{
-    user: User,
-    posts: [Post]
-  }
-
   type Query {
-    getUser(id: ID!): User
-    getAllUsers: [User]
+    getUser: User
+    getAllUsers(name: String): [User]
     getPost(id: ID!): Post
-    getAllPosts: UserPosts
+    getAllPosts: [Post]
+    getUserFollowers: [User]
   }
 
   type Mutation {

@@ -3,7 +3,7 @@ import { Form, Input } from "antd";
 import { useMutation } from "@apollo/client";
 import { LOGIN_USER } from "../Mutations";
 import AppLayout from "../Layout/AppLayout";
-import PrimaryButton from "../components/Button";
+import PrimaryButton from "../components/Shared/Button";
 import { useNavigate } from "react-router-dom";
 
 type FieldType = {
@@ -16,7 +16,9 @@ const Login = () => {
 
   const navigate = useNavigate();
 
-  const [loginUser, { data, loading, error }] = useMutation(LOGIN_USER);
+  const [loginUser, { data, loading, error }] = useMutation(LOGIN_USER, {
+    fetchPolicy: "network-only",
+  });
 
   const onFinishFailed: FormProps<FieldType>["onFinishFailed"] = (
     errorInfo
@@ -35,12 +37,14 @@ const Login = () => {
   };
 
   const onFinish: FormProps<FieldType>["onFinish"] = async (values) => {
+    console.log({ values });
+
     const data = await loginUser({ variables: values });
 
     if (data?.data?.loginUser) {
       const { token } = data?.data?.loginUser;
-      setCookie("user_token", token, 1)
-      navigate("/")
+      setCookie("user_token", token, 1);
+      navigate("/");
     }
   };
 
@@ -55,7 +59,7 @@ const Login = () => {
   };
 
   return (
-    <AppLayout isHome={false} button={headButton()}>
+    <AppLayout isHome={false} button={headButton()} isLoading={loading}>
       <div className="w-3/4 m-auto bg-white shadow-md rounded-lg p-3 mt-[150px] flex justify-center items-center">
         <Form
           name="basic"
@@ -88,8 +92,7 @@ const Login = () => {
 
           <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
             <PrimaryButton
-              type="primary"
-              htmlType="submit"
+              type="submit"
               title="Login"
               className="bg-red-600 text-white p-3 rounded-lg text-center font-bold mt-4 !border-0 active:bg-red-800"
             />
@@ -97,7 +100,7 @@ const Login = () => {
         </Form>
       </div>
     </AppLayout>
-  )
-}
+  );
+};
 
-export default Login
+export default Login;

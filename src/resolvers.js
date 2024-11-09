@@ -6,11 +6,34 @@ import checkAuth from "./utils/chekckAuth.js";
 
 const resolvers = {
   Query: {
-    getUser: async (_, { id }) => {
-      return await User.findById(id).populate("followings");
+    getUser: async (_, __, { req }) => {
+      const user = checkAuth(req);
+
+      if (!user) {
+        throw new Error("User not authenticated");
+      }
+      return await User.findOne({ email: user?.email }).populate("followings");
     },
-    getAllUsers: async () => {
-      return await User.find({});
+    getAllUsers: async (_, { name }, { req }) => {
+      const user = checkAuth(req);
+
+      if (!user) {
+        throw new Error("User not authenticated");
+      }
+      const query = {
+        email: { $ne: user.email },
+      };
+
+      if (name) {
+        query.username = { $regex: name, $options: "i" };
+      }
+
+      try {
+        const users = await User.find(query);
+        return users;
+      } catch (err) {
+        throw new Error("Users not found", err.message);
+      }
     },
     getPost: async (_, { id }) => {
       return await Post.findById(id).populate("author").populate("tags");
@@ -49,14 +72,26 @@ const resolvers = {
           posts = [...posts, ...followerPosts];
         }
 
-        return {
-          user: userData,
-          posts,
-        };
+        return posts;
       } catch (error) {
         console.error(error);
         return new Error("Something went wrong", error.message);
       }
+    },
+    getUserFollowers: async (_, __, { req }) => {
+      const user = checkAuth(req);
+
+      if (!user) {
+        throw new Error("User not authenticated");
+      }
+      const data =  await User.findOne(
+        { email: user?.email },
+        { followings: 1 }
+      ).populate("followings");
+
+      console.log({data})
+
+      return data?.followings
     },
   },
 
@@ -97,7 +132,7 @@ const resolvers = {
         return await post.save();
       } catch (err) {
         console.log(err);
-        return new Error("Unable to create Post", error.message);
+        return new Error("Unable to create Post");
       }
     },
     updatePost: async (_, { id, content, imageUrl, tags }) => {
@@ -139,7 +174,15 @@ const resolvers = {
         throw new Error("Authentication required.");
       }
 
-      const currentUser = await User.findById(user.id);
+      console.log({ user });
+
+      const currentUser = await User.findOne(
+        { email: user?.email },
+        { _id: 1, followings: 1 }
+      );
+
+      console.log({ currentUser });
+
       if (!currentUser) {
         throw new Error("Current user not found.");
       }
@@ -153,10 +196,10 @@ const resolvers = {
         throw new Error("You cannot follow yourself.");
       }
 
-      if (currentUser.followers.includes(targetUserId)) {
+      if (currentUser.followings.includes(targetUserId)) {
         throw new Error("You are already following this user.");
       }
-      currentUser.followers.push(targetUserId);
+      currentUser.followings.push(targetUserId);
 
       await currentUser.save();
 

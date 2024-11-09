@@ -18,3 +18,10 @@ export interface Post{
     likes: Like[];
 }
 
+export interface PostFormProps{
+    content: string;
+    imageUrl?: any; 
+    author: String; 
+    tags: String[]; 
+}
+

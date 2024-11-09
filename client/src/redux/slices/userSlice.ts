@@ -2,6 +2,7 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { User } from "../../interfaces/User";
 
 const initialState: User = {
+    _id:"",
     username: "",
     email: "",
     password: "",
@@ -15,8 +16,8 @@ const userSlice = createSlice({
         setUser: (state: any, action: PayloadAction<User>) => {
             return {...state, ...action.payload}
         },
-        addUserFollowers: (state:any, action: PayloadAction<User>) => {
-            return {...state, followings: [...state.followings, action.payload]}
+        addUserFollowers: (state:any, action: PayloadAction<string[]>) => {
+            return {...state, followings: action.payload}
         }
     }
 })

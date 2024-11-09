@@ -24,3 +24,13 @@ export const LOGIN_USER = gql`
     }
   }
 `;
+
+export const ADD_FOLLOWERS = gql`
+  mutation AddFollower($targetUserId: ID!) {
+    addFollower(targetUserId: $targetUserId) {
+      followings {
+        _id
+      }
+    }
+  }
+`;
