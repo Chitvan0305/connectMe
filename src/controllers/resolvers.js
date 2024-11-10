@@ -1,8 +1,8 @@
-import Post from "./models/Posts.js";
-import User from "./models/Users.js";
+import Post from "../models/Posts.js";
+import User from "../models/Users.js";
 import bcrypt from "bcrypt";
-import { generateToken } from "./utils/authToken.js";
-import checkAuth from "./utils/chekckAuth.js";
+import { generateToken } from "../utils/authToken.js";
+import checkAuth from "../utils/chekckAuth.js";
 
 const resolvers = {
   Post: {
@@ -47,17 +47,17 @@ const resolvers = {
       try {
         const user = checkAuth(req);
         if (!user) throw new Error("Authentication failed");
-    
+
         const email = user.email;
         const userData = await User.findOne({ email });
         if (!userData) throw new Error("User not found");
-    
+
         const userPosts = await Post.find({ author: userData._id })
           .populate("author tags")
           .sort({ createdAt: -1 })
           .skip((page - 1) * limit)
           .limit(limit);
-    
+
         return userPosts;
       } catch (error) {
         console.error(error);
@@ -68,25 +68,25 @@ const resolvers = {
       try {
         const user = checkAuth(req);
         if (!user) throw new Error("Authentication failed");
-    
+
         const email = user.email;
         const userData = await User.findOne({ email });
         if (!userData) throw new Error("User not found");
-    
+
         const followerIds = userData.followings.map((follower) => follower._id);
-    
+
         const followerPosts = await Post.find({ author: { $in: followerIds } })
           .populate("author tags")
           .sort({ createdAt: -1 })
           .skip((page - 1) * limit)
           .limit(limit);
-    
+
         return followerPosts;
       } catch (error) {
         console.error(error);
         return new Error("Something went wrong", error.message);
       }
-    },        
+    },
     getUserFollowers: async (_, __, { req }) => {
       const user = checkAuth(req);
 
@@ -157,8 +157,8 @@ const resolvers = {
     addLike: async (_, { postId, userId, username }) => {
       const post = await Post.findById(postId);
 
-      if(post.likes.filter((like) => like.userId === userId).length > 0){
-        throw new Error("Already Liked")
+      if (post.likes.filter((like) => like.userId === userId).length > 0) {
+        throw new Error("Already Liked");
       }
 
       const newLike = {

@@ -8,7 +8,7 @@ import http from "http";
 import dotenv from "dotenv";
 import bodyParser from "body-parser";
 import querySchema from "./src/schema.js";
-import resolvers from "./src/resolvers.js";
+import resolvers from "./src/controllers/resolvers.js";
 
 dotenv.config();
 
