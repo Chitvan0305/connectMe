@@ -34,3 +34,48 @@ export const ADD_FOLLOWERS = gql`
     }
   }
 `;
+
+export const CREATE_POST = gql`
+  mutation CreatePost(
+    $content: String!
+    $authorId: ID!
+    $imageUrl: String!
+    $tags: [ID]
+  ) {
+    createPost(
+      content: $content
+      authorId: $authorId
+      imageUrl: $imageUrl
+      tags: $tags
+    ) {
+      _id
+    }
+  }
+`;
+
+export const LIKE_POST = gql`
+  mutation AddLike($postId: ID!, $userId: String!, $username: String) {
+    addLike(postId: $postId, userId: $userId, username: $username) {
+      likesCount
+    }
+  }
+`;
+
+export const ADD_COMMENT = gql`
+  mutation AddComment(
+    $postId: ID!
+    $body: String!
+    $userId: String!
+    $username: String
+  ) {
+    addComment(
+      postId: $postId
+      body: $body
+      userId: $userId
+      username: $username
+    ) {
+      body
+      username
+    }
+  }
+`;

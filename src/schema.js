@@ -16,42 +16,59 @@ const querySchema = gql`
     tags: [User]
     comments: [Comment]
     likes: [Like]
+    likesCount: Int!
+    commentsCount: Int!
   }
 
   type Comment {
     body: String!
+    userId: String!
     username: String!
     createdAt: String!
   }
 
   type Like {
-    username: String!
+    userId: String!
     createdAt: String!
+    username: String!
   }
 
   type AuthPayload {
     user: User!
     token: String!
   }
-  
+
   type Query {
     getUser: User
     getAllUsers(name: String): [User]
     getPost(id: ID!): Post
-    getAllPosts: [Post]
     getUserFollowers: [User]
+    getUserPosts: [Post]
+    getFollowerPosts: [Post]
   }
 
   type Mutation {
-    createUser(username: String!, email: String!, password: String!): AuthPayload
+    createUser(
+      username: String!
+      email: String!
+      password: String!
+    ): AuthPayload
     loginUser(email: String!, password: String!): AuthPayload
-    createPost(content: String!, imageUrl: String, authorId: ID!, tags: [ID]): Post
-    updatePost(id: ID!, content: String, imageUrl: String, tags: [ID]): Post
-    deletePost(id: ID!): Boolean
-    addComment(postId: ID!, body: String!, username: String!): Post
-    addLike(postId: ID!, username: String!): Post
+    createPost(
+      content: String!
+      imageUrl: String!
+      authorId: ID!
+      tags: [ID]
+    ): Post
+    addComment(
+      postId: ID!
+      body: String!
+      userId: String!
+      username: String
+    ):[Comment]
+    addLike(postId: ID!, userId: String!, username: String): Post
     addFollower(targetUserId: ID!): User
-}
+  }
 `;
 
 export default querySchema;

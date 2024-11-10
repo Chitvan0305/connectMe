@@ -1,8 +1,8 @@
-import React from "react";
-import { Form, Input, Select } from "antd";
+import React, { useEffect } from "react";
+import { Alert, Form, Input, Select, Spin } from "antd";
 import PrimaryButton from "./Button";
 import { useQuery } from "@apollo/client";
-import "./form.css";
+import "../styles/form.css";
 import { GET_USER_FOLLOWERS } from "../../Queries";
 
 const formItemLayout = {
@@ -26,11 +26,18 @@ const PostForm: React.FC<PostFormProps> = ({ setFormValue, handleSubmit }) => {
     setFormValue((formValues: any) => ({ ...formValues, ...changedValues }));
   };
 
-  const { data: tagsData, loading, error } = useQuery(GET_USER_FOLLOWERS, {
-    fetchPolicy:"network-only"
+  const { data: tagsData, loading, error, refetch } = useQuery(GET_USER_FOLLOWERS, {
+    fetchPolicy: "network-only",
   });
 
-  console.log({tagsData})
+  useEffect(() => {
+    refetch();
+  }, [refetch]);
+
+  // Handle loading and error states
+  if (loading) return <Spin />;
+  
+  if (error) return <Alert message="Error fetching followers" type="error" />;
 
   return (
     <Form
@@ -42,7 +49,7 @@ const PostForm: React.FC<PostFormProps> = ({ setFormValue, handleSubmit }) => {
         <Input.TextArea placeholder="Post content" />
       </Form.Item>
 
-      <Form.Item label="Tag" name="tag" className="!mb-0">
+      <Form.Item label="Tag" name="tags" className="!mb-0">
         <Select placeholder="Select a user" style={{ width: 200 }} mode="multiple" optionFilterProp="children" className="!w-full">
           {tagsData.getUserFollowers.map((user:any) => (
             <Select.Option key={user._id} value={user._id}>
@@ -52,12 +59,12 @@ const PostForm: React.FC<PostFormProps> = ({ setFormValue, handleSubmit }) => {
         </Select>
       </Form.Item>
 
-      <Form.Item wrapperCol={{ offset: 6, span: 16 }}>
+      <Form.Item className="flex justify-center">
         <PrimaryButton
           type="button"
           onClick={handleSubmit}
           title="Add Post"
-          className="bg-red-600 text-white p-3 rounded-lg text-center font-bold mt-4 !border-0 active:bg-red-800"
+          className="bg-red-600 text-white p-3 rounded-lg text-center font-bold mt-4 !border-0 active:bg-red-800 m-auto"
         />
       </Form.Item>
     </Form>

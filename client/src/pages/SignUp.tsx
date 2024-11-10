@@ -1,6 +1,6 @@
 import React from "react";
 import type { FormProps } from "antd";
-import { Form, Input } from "antd";
+import { Form, Input, notification } from "antd";
 import { useMutation } from "@apollo/client";
 import { CREATE_NEW_USER } from "../Mutations";
 import AppLayout from "../Layout/AppLayout";
@@ -28,6 +28,10 @@ const SignUpForm: React.FC = () => {
     errorInfo
   ) => {
     console.log("Failed:", errorInfo);
+    notification.error({
+      message:"Something went wrong",
+      placement:"topRight"
+    })
   };
 
   const setCookie = (name: string, value: string, days: number) => {

@@ -1,5 +1,5 @@
 import type { FormProps } from "antd";
-import { Form, Input } from "antd";
+import { Form, Input, notification } from "antd";
 import { useMutation } from "@apollo/client";
 import { LOGIN_USER } from "../Mutations";
 import AppLayout from "../Layout/AppLayout";
@@ -23,7 +23,10 @@ const Login = () => {
   const onFinishFailed: FormProps<FieldType>["onFinishFailed"] = (
     errorInfo
   ) => {
-    console.log("Failed:", errorInfo);
+    notification.error({
+      message: "Something went wrong",
+      placement:"topRight"
+    })
   };
 
   const setCookie = (name: string, value: string, days: number) => {
@@ -37,8 +40,6 @@ const Login = () => {
   };
 
   const onFinish: FormProps<FieldType>["onFinish"] = async (values) => {
-    console.log({ values });
-
     const data = await loginUser({ variables: values });
 
     if (data?.data?.loginUser) {

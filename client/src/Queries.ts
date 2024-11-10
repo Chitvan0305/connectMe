@@ -9,32 +9,6 @@ export const GET_ALL_USERS = gql`
   }
 `;
 
-export const GET_ALL_POSTS = gql`
-  query GetAllPosts {
-    getAllPosts {
-      _id
-      author {
-        username
-      }
-      comments {
-        username
-        createdAt
-        body
-      }
-      content
-      imageUrl
-      likes {
-        username
-        createdAt
-      }
-      tags {
-        username
-        _id
-      }
-    }
-  }
-`;
-
 export const GET_USER_INFO = gql`
   query GetUser {
     getUser {
@@ -53,6 +27,65 @@ export const GET_USER_FOLLOWERS = gql`
     getUserFollowers {
       username
       _id
+    }
+  }
+`;
+
+export const GET_FOLLOWER_POSTS = gql`
+  query GetFollowerPosts {
+    getFollowerPosts {
+      _id
+      author {
+        _id
+        username
+      }
+      comments {
+        username
+        body
+        createdAt
+      }
+      commentsCount
+      likesCount
+      imageUrl
+      content
+      tags {
+        username
+      }
+      likes {
+        userId
+        username
+        createdAt
+      }
+    }
+  }
+`;
+
+export const GET_USER_POSTS = gql`
+  query getUserPosts {
+    getUserPosts {
+      _id
+      author {
+        _id
+        username
+      }
+      comments {
+        userId
+        username
+        body
+        createdAt
+      }
+      commentsCount
+      likesCount
+      imageUrl
+      content
+      tags {
+        username
+      }
+      likes {
+        userId
+        username
+        createdAt
+      }
     }
   }
 `;

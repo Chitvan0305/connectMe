@@ -7,8 +7,9 @@ const postSlice = createSlice({
     name: "posts",
     initialState,
     reducers: {
-        setPosts: (state: any, action: PayloadAction<Post>) => {
-            return [...state, action.payload]
+        setPosts: (state: any, action: PayloadAction<Post[]>) => {
+            state = action.payload
+            return state
         },
         addLikes: (state:any, action: PayloadAction<Like>) => {
             return {...state, likes: [...state.likes, action.payload]}
@@ -16,12 +17,12 @@ const postSlice = createSlice({
         addComment: (state:any, action: PayloadAction<Comment>) => {
             return {...state, comments: [...state.comments, action.payload]}
         },
-        addTags: (state:any, action: PayloadAction<String>) => {
-            return {...state, tags: [...state.tags, action.payload]}
-        }
+        addPost: (state: any, action: PayloadAction<Post[]>) => {
+            return [...state, action.payload]
+        },
     }
 })
 
-export const {setPosts, addLikes, addComment, addTags} = postSlice.actions
+export const {setPosts, addLikes, addComment, addPost} = postSlice.actions
 
 export default postSlice.reducer

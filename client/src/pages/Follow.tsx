@@ -19,22 +19,18 @@ const Follow = () => {
   const [users, setUsers] = useState<UserInfoProps[]>([]);
   const { user } = useSelector((state: RootState) => state);
 
-  console.log({user})
-
   const filterFollwedUser = useCallback(
     (users: UserInfoProps[]) => {
       return users?.filter(
-        (userInfo) =>
-          !user.followings.includes(userInfo?._id)
+        (userInfo) => !user.followings.includes(userInfo?._id)
       );
     },
     [user]
   );
 
-  const [getAllUsers, { loading }] = useLazyQuery(GET_ALL_USERS, {
+  const [getAllUsers, { loading, error }] = useLazyQuery(GET_ALL_USERS, {
     fetchPolicy: "network-only",
     onCompleted: (data) => {
-      console.log({ data });
       if (data?.getAllUsers) {
         const filteredUser = filterFollwedUser(data.getAllUsers);
         setUsers(filteredUser);
@@ -56,9 +52,7 @@ const Follow = () => {
   };
 
   useEffect(() => {
-    if (user.followings && user.followings.length > 0) {
-      getAllUsers();
-    }
+    getAllUsers();
   }, [user.followings, getAllUsers]);
 
   return (

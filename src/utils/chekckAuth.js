@@ -2,9 +2,7 @@ import { verifyToken } from "./authToken.js";
 
 const checkAuth = (req) => {
     const token = req.headers['authorization'] || req.headers.Authorization;
-
-    console.log({token})
-  
+      
     if (token && token.startsWith('Bearer ')) {
       try {
         const decodedToken = verifyToken(token);

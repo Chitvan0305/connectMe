@@ -1,6 +1,6 @@
 import React from 'react'
 import { Input } from 'antd';
-import "./Search.css"
+import "../styles/Search.css"
 
 interface SearchBarProps {
     styles?: string;

@@ -1,12 +1,13 @@
 import React, { ReactNode } from "react";
 import { useSelector } from "react-redux";
 import { RootState } from "../redux/store";
-import { Skeleton } from "antd";
+import { Dropdown, MenuProps, Skeleton, Space } from "antd";
 import { FaUserCircle } from "react-icons/fa";
 import { BsPostcardHeartFill } from "react-icons/bs";
 import { IoMdAddCircle } from "react-icons/io";
 import { FaUserFriends } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
+import { MdLogout } from "react-icons/md";
 
 interface LayoutProps {
   isLoading: Boolean;
@@ -15,6 +16,25 @@ interface LayoutProps {
   button?: ReactNode;
 }
 
+const items: MenuProps["items"] = [
+  {
+    key: "1",
+    label: (
+      <div
+        className="flex justify-between p-2 items-center gap-2 z-[200]"
+        onClick={() => {
+          document.cookie =
+            "user_token=;expires=Thu, 01 Jan 1970 00:00:01 GMT;";
+          window.location.reload();
+        }}
+      >
+        <p className="text-sm text-black">Log Out</p>
+        <MdLogout color="#000" />
+      </div>
+    ),
+  },
+];
+
 const AppLayout: React.FC<LayoutProps> = ({
   isLoading = false,
   children,
@@ -22,7 +42,7 @@ const AppLayout: React.FC<LayoutProps> = ({
   button,
 }) => {
   const { user } = useSelector((state: RootState) => state);
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
   return (
     <section>
@@ -31,10 +51,20 @@ const AppLayout: React.FC<LayoutProps> = ({
           Connect Me!
         </div>
         {isHome ? (
-          <div className="flex gap-2 justify-center items-center">
-            <FaUserCircle size={24} color="#fff" />{" "}
-            <span className="text-white font-bold">{user.username} </span>
-          </div>
+          <Space direction="vertical">
+            <Space wrap>
+              <Dropdown
+                menu={{ items }}
+                placement="bottomLeft"
+                overlayClassName="dropdown_container"
+              >
+                <div className="flex gap-2 justify-center items-center">
+                  <FaUserCircle size={24} color="#fff" />{" "}
+                  <span className="text-white font-bold">{user.username} </span>
+                </div>
+              </Dropdown>
+            </Space>
+          </Space>
         ) : (
           button
         )}
@@ -44,15 +74,24 @@ const AppLayout: React.FC<LayoutProps> = ({
       </main>
       {isHome && (
         <footer className="w-full flex justify-between px-5 py-3 bg-red-600 fixed bottom-0 left-0 box-border z-[2000]">
-          <div className="flex flex-1 justify-center items-center gap-1 text-white flex-col" onClick={() => navigate("/posts")}>
+          <div
+            className="flex flex-1 justify-center items-center gap-1 text-white flex-col"
+            onClick={() => navigate("/posts")}
+          >
             <BsPostcardHeartFill size={16} color="#fff" />
             <p className="text-xs font-semibold">My Posts</p>
           </div>
-          <div className="flex flex-1 justify-center items-center gap-1 text-white flex-col" onClick={() => navigate("/addPost")}>
+          <div
+            className="flex flex-1 justify-center items-center gap-1 text-white flex-col"
+            onClick={() => navigate("/addPost")}
+          >
             <IoMdAddCircle size={16} color="#fff" />
             <p className="text-xs font-semibold">Add Posts</p>
           </div>
-          <div className="flex flex-1 justify-center items-center gap-1 text-white flex-col" onClick={() => navigate("/followers")}>
+          <div
+            className="flex flex-1 justify-center items-center gap-1 text-white flex-col"
+            onClick={() => navigate("/followers")}
+          >
             <FaUserFriends size={16} color="#fff" />
             <p className="text-xs font-semibold">Add Friends</p>
           </div>

@@ -5,6 +5,11 @@ import { generateToken } from "./utils/authToken.js";
 import checkAuth from "./utils/chekckAuth.js";
 
 const resolvers = {
+  Post: {
+    likesCount: (parent) => parent.likes.length,
+    commentsCount: (parent) => parent.comments.length,
+  },
+
   Query: {
     getUser: async (_, __, { req }) => {
       const user = checkAuth(req);
@@ -38,60 +43,62 @@ const resolvers = {
     getPost: async (_, { id }) => {
       return await Post.findById(id).populate("author").populate("tags");
     },
-    getAllPosts: async (_, __, { req }) => {
+    getUserPosts: async (_, { page = 1, limit = 10 }, { req }) => {
       try {
         const user = checkAuth(req);
-        if (!user) {
-          throw new Error("Aunthentication failed");
-        }
-        const email = user?.email;
-
-        const userData = await User.findOne({ email: user?.email });
-
-        if (!userData) {
-          throw new Error("User not Found");
-        }
-
-        const userPosts = await Post.find({ author: userData?._id }).populate(
-          "author"
-        );
-
-        let posts;
-
-        if (userPosts) {
-          posts = [...userPosts];
-        }
-
-        const followerIds = userData.followings.map((follower) => follower._id);
-
-        const followerPosts = await Post.find({ author: { $in: followerIds } })
-          .populate("author")
-          .sort({ createdAt: -1 });
-
-        if (followerPosts) {
-          posts = [...posts, ...followerPosts];
-        }
-
-        return posts;
+        if (!user) throw new Error("Authentication failed");
+    
+        const email = user.email;
+        const userData = await User.findOne({ email });
+        if (!userData) throw new Error("User not found");
+    
+        const userPosts = await Post.find({ author: userData._id })
+          .populate("author tags")
+          .sort({ createdAt: -1 })
+          .skip((page - 1) * limit)
+          .limit(limit);
+    
+        return userPosts;
       } catch (error) {
         console.error(error);
         return new Error("Something went wrong", error.message);
       }
     },
+    getFollowerPosts: async (_, { page = 1, limit = 10 }, { req }) => {
+      try {
+        const user = checkAuth(req);
+        if (!user) throw new Error("Authentication failed");
+    
+        const email = user.email;
+        const userData = await User.findOne({ email });
+        if (!userData) throw new Error("User not found");
+    
+        const followerIds = userData.followings.map((follower) => follower._id);
+    
+        const followerPosts = await Post.find({ author: { $in: followerIds } })
+          .populate("author tags")
+          .sort({ createdAt: -1 })
+          .skip((page - 1) * limit)
+          .limit(limit);
+    
+        return followerPosts;
+      } catch (error) {
+        console.error(error);
+        return new Error("Something went wrong", error.message);
+      }
+    },        
     getUserFollowers: async (_, __, { req }) => {
       const user = checkAuth(req);
 
       if (!user) {
         throw new Error("User not authenticated");
       }
-      const data =  await User.findOne(
+      const data = await User.findOne(
         { email: user?.email },
         { followings: 1 }
       ).populate("followings");
 
-      console.log({data})
-
-      return data?.followings
+      return data?.followings;
     },
   },
 
@@ -135,35 +142,30 @@ const resolvers = {
         return new Error("Unable to create Post");
       }
     },
-    updatePost: async (_, { id, content, imageUrl, tags }) => {
-      return await Post.findByIdAndUpdate(
-        id,
-        { content, imageUrl, tags },
-        { new: true }
-      );
-    },
-    deletePost: async (_, { id }) => {
-      const post = await Post.findById(id);
-      if (post) {
-        await post.remove();
-        return true;
-      }
-      return false;
-    },
-    addComment: async (_, { postId, body, username }) => {
+    addComment: async (_, { postId, body, userId, username }) => {
       const post = await Post.findById(postId);
       const newComment = {
         body,
         username,
+        userId,
         createdAt: new Date().toISOString(),
       };
       post.comments.push(newComment);
       await post.save();
-      return post;
+      return post.comments;
     },
-    addLike: async (_, { postId, username }) => {
+    addLike: async (_, { postId, userId, username }) => {
       const post = await Post.findById(postId);
-      const newLike = { username, createdAt: new Date().toISOString() };
+
+      if(post.likes.filter((like) => like.userId === userId).length > 0){
+        throw new Error("Already Liked")
+      }
+
+      const newLike = {
+        username,
+        userId,
+        createdAt: new Date().toISOString(),
+      };
       post.likes.push(newLike);
       await post.save();
       return post;
@@ -174,14 +176,10 @@ const resolvers = {
         throw new Error("Authentication required.");
       }
 
-      console.log({ user });
-
       const currentUser = await User.findOne(
         { email: user?.email },
         { _id: 1, followings: 1 }
       );
-
-      console.log({ currentUser });
 
       if (!currentUser) {
         throw new Error("Current user not found.");

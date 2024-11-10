@@ -7,6 +7,7 @@ const PostSchema = new mongoose.Schema({
   tags: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
   comments: [
     {
+      userId:String,
       body: String,
       username: String,
       createdAt: String,
@@ -14,6 +15,7 @@ const PostSchema = new mongoose.Schema({
   ],
   likes: [
     {
+      userId: String,
       username: String,
       createdAt: String,
     },

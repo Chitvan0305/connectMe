@@ -11,3 +11,8 @@ body{
 }
 
 
+.dropdown_container{
+
+    z-index: 3000 !important;
+    top: 50px !important;
+}
