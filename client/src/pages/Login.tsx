@@ -1,5 +1,5 @@
 import type { FormProps } from "antd";
-import { Form, Input, notification } from "antd";
+import { Button, Form, Input, notification } from "antd";
 import { useMutation } from "@apollo/client";
 import { LOGIN_USER } from "../Mutations";
 import AppLayout from "../Layout/AppLayout";
@@ -25,8 +25,8 @@ const Login = () => {
   ) => {
     notification.error({
       message: "Something went wrong",
-      placement:"topRight"
-    })
+      placement: "topRight",
+    });
   };
 
   const setCookie = (name: string, value: string, days: number) => {
@@ -39,14 +39,16 @@ const Login = () => {
     document.cookie = name + "=" + value + expires + "; path=/";
   };
 
-  const onFinish: FormProps<FieldType>["onFinish"] = async (values) => {
-    const data = await loginUser({ variables: values });
+  const onFinish: FormProps<FieldType>["onFinish"] = async () => {
+    form.validateFields().then(async (values) => {
+      const data = await loginUser({ variables: values });
 
-    if (data?.data?.loginUser) {
-      const { token } = data?.data?.loginUser;
-      setCookie("user_token", token, 1);
-      navigate("/");
-    }
+      if (data?.data?.loginUser) {
+        const { token } = data?.data?.loginUser;
+        setCookie("user_token", token, 1);
+        navigate("/");
+      }
+    });
   };
 
   const headButton = () => {
@@ -74,7 +76,10 @@ const Login = () => {
           <Form.Item<FieldType>
             label="Email"
             name="email"
-            rules={[{ required: true, message: "Please input your email!" }]}
+            rules={[
+              { required: true, message: "Please input your email!" },
+              { type: "email", message: "Please enter a valid email address!" },
+            ]}
             className="!mb-3"
           >
             <Input />
@@ -83,18 +88,28 @@ const Login = () => {
           <Form.Item<FieldType>
             label="Password"
             name="password"
-            rules={[{ required: true, message: "Please input your password!" }]}
+            rules={[
+              { required: true, message: "Please input your password!" },
+              { min: 6, message: "Password must be at least 6 characters." },
+              { max: 20, message: "Password cannot exceed 20 characters." },
+              {
+                pattern: /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,}$/,
+                message:
+                  "Password must contain at least one uppercase letter, one lowercase letter, and one number.",
+              },
+            ]}
             className="!mb-3"
           >
             <Input.Password />
           </Form.Item>
 
           <Form.Item className="w-full flex justify-center items-center md:mb-0">
-            <PrimaryButton
-              type="submit"
-              title="Login"
+            <Button
               className="bg-red-600 text-white p-3 md:p-4 rounded-lg md:text-lg text-center font-bold mt-4 !border-0 active:bg-red-800"
-            />
+              htmlType="submit"
+            >
+              Login
+            </Button>
           </Form.Item>
         </Form>
       </div>

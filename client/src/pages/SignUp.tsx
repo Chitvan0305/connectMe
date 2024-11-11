@@ -1,6 +1,6 @@
 import React from "react";
 import type { FormProps } from "antd";
-import { Form, Input, notification } from "antd";
+import { Button, Form, Input, notification } from "antd";
 import { useMutation } from "@apollo/client";
 import { CREATE_NEW_USER } from "../Mutations";
 import AppLayout from "../Layout/AppLayout";
@@ -19,7 +19,6 @@ const SignUpForm: React.FC = () => {
   const [form] = Form.useForm();
 
   const navigate = useNavigate();
-
   const dispatch = useDispatch();
 
   const [createUser, { data, loading, error }] = useMutation(CREATE_NEW_USER);
@@ -80,7 +79,11 @@ const SignUpForm: React.FC = () => {
           <Form.Item<FieldType>
             label="Username"
             name="username"
-            rules={[{ required: true, message: "Please input your username!" }]}
+            rules={[
+              { required: true, message: "Please input your username!" },
+              { min: 3, message: "Username must be at least 3 characters." },
+              { max: 15, message: "Username cannot exceed 15 characters." },
+            ]}
             className="!mb-3"
           >
             <Input />
@@ -89,7 +92,10 @@ const SignUpForm: React.FC = () => {
           <Form.Item<FieldType>
             label="Email"
             name="email"
-            rules={[{ required: true, message: "Please input your email!" }]}
+            rules={[
+              { required: true, message: "Please input your email!" },
+              { type: "email", message: "Please enter a valid email address!" },
+            ]}
             className="!mb-3"
           >
             <Input />
@@ -98,18 +104,28 @@ const SignUpForm: React.FC = () => {
           <Form.Item<FieldType>
             label="Password"
             name="password"
-            rules={[{ required: true, message: "Please input your password!" }]}
+            rules={[
+              { required: true, message: "Please input your password!" },
+              { min: 6, message: "Password must be at least 6 characters." },
+              { max: 20, message: "Password cannot exceed 20 characters." },
+              {
+                pattern: /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,}$/,
+                message:
+                  "Password must contain at least one uppercase letter, one lowercase letter, and one number.",
+              },
+            ]}
             className="!mb-3"
           >
             <Input.Password />
           </Form.Item>
 
           <Form.Item className="w-full flex justify-center items-center md:mb-0">
-            <PrimaryButton
-              type="submit"
-              title="Sign up"
+            <Button
               className="bg-red-600 text-white p-3 md:p-4 rounded-lg md:text-lg text-center font-bold mt-4 !border-0 active:bg-red-800"
-            />
+              htmlType="submit"
+            >
+              Login
+            </Button>
           </Form.Item>
         </Form>
       </div>
