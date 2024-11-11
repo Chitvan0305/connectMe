@@ -43,8 +43,8 @@ const querySchema = gql`
     getAllUsers(name: String): [User]
     getPost(id: ID!): Post
     getUserFollowers: [User]
-    getUserPosts: [Post]
-    getFollowerPosts: [Post]
+    getUserPosts(page: Int, limit: Int): [Post]
+    getFollowerPosts(page: Int, limit: Int): [Post]
   }
 
   type Mutation {

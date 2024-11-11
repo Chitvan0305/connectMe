@@ -32,8 +32,8 @@ export const GET_USER_FOLLOWERS = gql`
 `;
 
 export const GET_FOLLOWER_POSTS = gql`
-  query GetFollowerPosts {
-    getFollowerPosts {
+  query GetFollowerPosts($page: Int, $limit: Int) {
+    getFollowerPosts(page: $page, limit: $limit) {
       _id
       author {
         _id
@@ -61,8 +61,8 @@ export const GET_FOLLOWER_POSTS = gql`
 `;
 
 export const GET_USER_POSTS = gql`
-  query getUserPosts {
-    getUserPosts {
+  query GetUserPosts($page: Int, $limit: Int) {
+    getUserPosts(page: $page, limit: $limit) {
       _id
       author {
         _id

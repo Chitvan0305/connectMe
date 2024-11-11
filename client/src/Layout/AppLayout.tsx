@@ -8,6 +8,7 @@ import { IoMdAddCircle } from "react-icons/io";
 import { FaUserFriends } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import { MdLogout } from "react-icons/md";
+import { FaHome } from "react-icons/fa";
 
 interface LayoutProps {
   isLoading: Boolean;
@@ -46,7 +47,7 @@ const AppLayout: React.FC<LayoutProps> = ({
 
   return (
     <section>
-      <header className="w-full flex justify-between px-5 py-3 bg-red-600 sticky top-0 left-0 box-border z-[2000]">
+      <header className="w-full flex justify-between px-5 py-3 bg-red-600 sticky top-0 left-0 box-border z-[20]">
         <div className="font-bold text-white flex justify-center items-center ">
           Connect Me!
         </div>
@@ -73,7 +74,14 @@ const AppLayout: React.FC<LayoutProps> = ({
         {isLoading ? <Skeleton active={isLoading as boolean} /> : children}
       </main>
       {isHome && (
-        <footer className="w-full flex justify-between px-5 py-3 bg-red-600 fixed bottom-0 left-0 box-border z-[2000]">
+        <footer className="w-full flex justify-between px-5 py-3 bg-red-600 fixed bottom-0 left-0 box-border z-[20]">
+          <div
+            className="flex flex-1 justify-center items-center gap-1 text-white flex-col"
+            onClick={() => navigate("/")}
+          >
+            <FaHome size={16} color="#fff" />
+            <p className="text-xs font-semibold">Home</p>
+          </div>
           <div
             className="flex flex-1 justify-center items-center gap-1 text-white flex-col"
             onClick={() => navigate("/posts")}

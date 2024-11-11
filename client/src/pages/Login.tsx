@@ -61,17 +61,15 @@ const Login = () => {
 
   return (
     <AppLayout isHome={false} button={headButton()} isLoading={loading}>
-      <div className="w-3/4 m-auto bg-white shadow-md rounded-lg p-3 mt-[150px] flex justify-center items-center">
+      <div className="w-3/4 md:w-1/2 m-auto bg-white shadow-md rounded-lg p-3 md:pt-5 mt-[150px] flex justify-center items-center">
         <Form
           name="basic"
-          labelCol={{ span: 8 }}
-          wrapperCol={{ span: 16 }}
           form={form}
           initialValues={{ remember: true }}
           onFinish={onFinish}
           onFinishFailed={onFinishFailed}
           autoComplete="off"
-          className="w-full"
+          className="w-full md:w-3/4"
         >
           <Form.Item<FieldType>
             label="Email"
@@ -91,11 +89,11 @@ const Login = () => {
             <Input.Password />
           </Form.Item>
 
-          <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
+          <Form.Item className="w-full flex justify-center items-center md:mb-0">
             <PrimaryButton
               type="submit"
               title="Login"
-              className="bg-red-600 text-white p-3 rounded-lg text-center font-bold mt-4 !border-0 active:bg-red-800"
+              className="bg-red-600 text-white p-3 md:p-4 rounded-lg md:text-lg text-center font-bold mt-4 !border-0 active:bg-red-800"
             />
           </Form.Item>
         </Form>
