@@ -51,7 +51,7 @@ const Login = () => {
         }else{
           throw new Error('Unable to login')
         }
-      } catch (error) {
+      } catch (error: any) {
         console.error("Error:", error);
         notification.error({
           message: error.message,

@@ -1,10 +1,13 @@
 import { gql } from "@apollo/client";
 
 export const GET_ALL_USERS = gql`
-  query GetAllUsers($name: String) {
-    getAllUsers(name: $name) {
+  query GetAllUsers($name: String, $page: Int, $limit: Int) {
+    getAllUsers(name: $name, page: $page, limit: $limit) {
       username
       _id
+      followers {
+        _id
+      }
     }
   }
 `;

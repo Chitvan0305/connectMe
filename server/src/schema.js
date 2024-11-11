@@ -6,6 +6,7 @@ const querySchema = gql`
     email: String!
     password: String!
     followings: [User]
+    followers: [User]
   }
 
   type Post {
@@ -40,7 +41,7 @@ const querySchema = gql`
 
   type Query {
     getUser: User
-    getAllUsers(name: String): [User]
+    getAllUsers(name: String, page: Int, limit: Int): [User]
     getPost(id: ID!): Post
     getUserFollowers: [User]
     getUserPosts(page: Int, limit: Int): [Post]
@@ -68,6 +69,7 @@ const querySchema = gql`
     ):[Comment]
     addLike(postId: ID!, userId: String!, username: String): Post
     addFollower(targetUserId: ID!): User
+    unfollowUser(targetUserId: ID!): User
   }
 `;
 

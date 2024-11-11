@@ -79,3 +79,14 @@ export const ADD_COMMENT = gql`
     }
   }
 `;
+
+
+export const UNFOLLOW_USER = gql`
+  mutation Unfollow($targetUserId: ID!) {
+    unfollowUser(targetUserId: $targetUserId) {
+      followings {
+        _id
+      }
+    }
+  }
+`

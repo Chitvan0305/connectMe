@@ -19,7 +19,7 @@ const resolvers = {
       }
       return await User.findOne({ email: user?.email }).populate("followings");
     },
-    getAllUsers: async (_, { name }, { req }) => {
+    getAllUsers: async (_, { name, page = 1, limit = 10 }, { req }) => {
       const user = checkAuth(req);
 
       if (!user) {
@@ -34,7 +34,15 @@ const resolvers = {
       }
 
       try {
-        const users = await User.find(query);
+        let users;
+        if (name) {
+          users = await User.find(query);
+        } else {
+          users = await User.find(query)
+            .skip((page - 1) * limit)
+            .limit(limit);
+        }
+
         return users;
       } catch (err) {
         throw new Error("Users not found", err.message);
@@ -197,9 +205,55 @@ const resolvers = {
       if (currentUser.followings.includes(targetUserId)) {
         throw new Error("You are already following this user.");
       }
+
       currentUser.followings.push(targetUserId);
+      targetUser.followers.push(currentUser?._id);
 
       await currentUser.save();
+
+      await targetUser.save();
+
+      return currentUser;
+    },
+    unfollowUser: async (_, { targetUserId }, { req }) => {
+      const user = checkAuth(req);
+      if (!user) {
+        throw new Error("Authentication required.");
+      }
+
+      const currentUser = await User.findOne(
+        { email: user?.email },
+        { _id: 1, followings: 1 }
+      );
+
+      if (!currentUser) {
+        throw new Error("Current user not found.");
+      }
+
+      const targetUser = await User.findById(targetUserId);
+      if (!targetUser) {
+        throw new Error("Target user not found.");
+      }
+
+      if (currentUser.id.toString() === targetUser.id.toString()) {
+        throw new Error("You cannot unfollow yourself.");
+      }
+
+      if (!currentUser.followings.includes(targetUserId)) {
+        throw new Error("You are not following this user.");
+      }
+
+      currentUser.followings = currentUser.followings.filter(
+        (id) => id.toString() !== targetUserId.toString()
+      );
+
+      targetUser.followers = targetUser.followers.filter(
+        (id) => id.toString() !== currentUser?._id?.toString()
+      );
+
+      await currentUser.save();
+
+      await targetUser.save();
 
       return currentUser;
     },

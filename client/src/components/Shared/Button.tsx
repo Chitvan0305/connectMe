@@ -22,7 +22,7 @@ const PrimaryButton: React.FC<ButtonProps> = ({
         components: {
           Button: {
             defaultActiveBg: "rgb(220, 38, 38)",
-            defaultHoverBg: "rgba(220, 38, 38, 0.5)",
+            defaultHoverBg: "rgba(220, 38, 38)",
             textTextHoverColor: "#fff",
           },
         },

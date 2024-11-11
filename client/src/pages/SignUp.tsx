@@ -55,7 +55,7 @@ const SignUpForm: React.FC = () => {
       } else {
         throw new Error("Sign up failed")
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error("Error:", error);
       notification.error({
         message: error.message,
