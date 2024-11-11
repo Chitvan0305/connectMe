@@ -10,6 +10,7 @@ import { ADD_COMMENT, LIKE_POST } from "../../Mutations";
 import CommentInput from "./CommentInput";
 import { useSelector } from "react-redux";
 import { RootState } from "../../redux/store";
+import { FaUserTag } from "react-icons/fa6";
 
 const { Meta } = Card;
 
@@ -131,8 +132,8 @@ const PostCard: React.FC<PostCardInterface> = ({
             <p>
               {content} <br />{" "}
               {tags && tags.length > 0 && (
-                <span className="font-semibold">
-                  with {tags.map((tag) => tag?.username).join(",")}
+                <span className="font-semibold flex gap-1 items-center">
+                  <FaUserTag color="#fff" size={12} />{tags.map((tag) => tag?.username).join(",")}
                 </span>
               )}
             </p>
