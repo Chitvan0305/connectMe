@@ -26,7 +26,10 @@ const server = new ApolloServer({
 });
 
 app.use(bodyParser.json());
-app.use(cors());
+app.use(cors({
+  origin: 'https://connectme-obz8.onrender.com', 
+  credentials: true
+}));
 
 app.use(express.static(path.join(__dirname, '../client/dist')));
 
