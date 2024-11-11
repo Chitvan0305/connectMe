@@ -41,12 +41,22 @@ const Login = () => {
 
   const onFinish: FormProps<FieldType>["onFinish"] = async () => {
     form.validateFields().then(async (values) => {
-      const data = await loginUser({ variables: values });
+      try {
+        const data = await loginUser({ variables: values });
 
-      if (data?.data?.loginUser) {
-        const { token } = data?.data?.loginUser;
-        setCookie("user_token", token, 1);
-        navigate("/");
+        if (data?.data?.loginUser) {
+          const { token } = data?.data?.loginUser;
+          setCookie("user_token", token, 1);
+          navigate("/");
+        }else{
+          throw new Error('Unable to login')
+        }
+      } catch (error) {
+        console.error("Error:", error);
+        notification.error({
+          message: error.message,
+          placement: "topRight",
+        });
       }
     });
   };

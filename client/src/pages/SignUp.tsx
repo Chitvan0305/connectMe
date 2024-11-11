@@ -44,13 +44,23 @@ const SignUpForm: React.FC = () => {
   };
 
   const onFinish: FormProps<FieldType>["onFinish"] = async (values) => {
-    const data = await createUser({ variables: values });
-
-    if (data?.data?.createUser) {
-      const { token } = data?.data?.createUser;
-      setCookie("user_token", token, 1);
-      dispatch(setUser(data?.data?.createUser?.user));
-      navigate("/");
+    try {
+      const { data } = await createUser({ variables: values });
+      
+      if (data?.createUser) {
+        const { token } = data.createUser;
+        setCookie("user_token", token, 1);
+        dispatch(setUser(data.createUser.user));
+        navigate("/");
+      } else {
+        throw new Error("Sign up failed")
+      }
+    } catch (error) {
+      console.error("Error:", error);
+      notification.error({
+        message: error.message,
+        placement:"topRight"
+      });
     }
   };
 
@@ -124,7 +134,7 @@ const SignUpForm: React.FC = () => {
               className="bg-red-600 text-white p-3 md:p-4 rounded-lg md:text-lg text-center font-bold mt-4 !border-0 active:bg-red-800"
               htmlType="submit"
             >
-              Login
+              Sign Up
             </Button>
           </Form.Item>
         </Form>
