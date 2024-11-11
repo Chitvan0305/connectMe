@@ -43,8 +43,8 @@ const MyPosts = () => {
 
   if (loading) {
     return (
-      <div className="w-full flex justify-center my-4">
-        <Spin />
+      <div className="w-full min-h-screen flex flex-col justify-center items-center">
+        <Spin className="!text-white" />
       </div>
     );
   }

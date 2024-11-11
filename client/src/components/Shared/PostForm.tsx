@@ -26,7 +26,12 @@ const PostForm: React.FC<PostFormProps> = ({ setFormValue, handleSubmit }) => {
     setFormValue((formValues: any) => ({ ...formValues, ...changedValues }));
   };
 
-  const { data: tagsData, loading, error, refetch } = useQuery(GET_USER_FOLLOWERS, {
+  const {
+    data: tagsData,
+    loading,
+    error,
+    refetch,
+  } = useQuery(GET_USER_FOLLOWERS, {
     fetchPolicy: "network-only",
   });
 
@@ -34,9 +39,13 @@ const PostForm: React.FC<PostFormProps> = ({ setFormValue, handleSubmit }) => {
     refetch();
   }, [refetch]);
 
-  // Handle loading and error states
-  if (loading) return <Spin />;
-  
+  if (loading)
+    return (
+      <div className="w-full min-h-screen flex flex-col justify-center items-center">
+        <Spin className="!text-white" />
+      </div>
+    );
+
   if (error) return <Alert message="Error fetching followers" type="error" />;
 
   return (
@@ -50,8 +59,14 @@ const PostForm: React.FC<PostFormProps> = ({ setFormValue, handleSubmit }) => {
       </Form.Item>
 
       <Form.Item label="Tag" name="tags" className="!mb-0">
-        <Select placeholder="Select a user" style={{ width: 200 }} mode="multiple" optionFilterProp="children" className="!w-full">
-          {tagsData.getUserFollowers.map((user:any) => (
+        <Select
+          placeholder="Select a user"
+          style={{ width: 200 }}
+          mode="multiple"
+          optionFilterProp="children"
+          className="!w-full"
+        >
+          {tagsData.getUserFollowers.map((user: any) => (
             <Select.Option key={user._id} value={user._id}>
               {user.username}
             </Select.Option>

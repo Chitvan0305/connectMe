@@ -1,5 +1,5 @@
 import React, { useMemo, useState } from "react";
-import { Card, notification, Skeleton } from "antd";
+import { Card, notification, Skeleton, Spin } from "antd";
 import { BiLike } from "react-icons/bi";
 import { BiSolidLike } from "react-icons/bi";
 import { FaRegComment } from "react-icons/fa";
@@ -19,7 +19,7 @@ interface PostCardInterface {
   author: Author;
   likesCount: Number;
   content: string;
-  comments:Comment[]
+  comments: Comment[];
   tags: Tag[];
   likes: Like[];
 }
@@ -34,14 +34,13 @@ const PostCard: React.FC<PostCardInterface> = ({
   tags,
   likes,
 }) => {
-
-  const {user} = useSelector((state: RootState) => state)
+  const { user } = useSelector((state: RootState) => state);
 
   const [isLiked, setLiked] = useState<boolean>(false);
-  const [commentInput, showCommentInput] = useState<boolean>(false)
-  const [comment, setComment] = useState<string>("")
-  const [allComments, setComments] = useState<Comment[]>(comments)
-  const [likeCount, setLikeCount] = useState(likesCount)
+  const [commentInput, showCommentInput] = useState<boolean>(false);
+  const [comment, setComment] = useState<string>("");
+  const [allComments, setComments] = useState<Comment[]>(comments);
+  const [likeCount, setLikeCount] = useState(likesCount);
 
   const [addLike, { data, loading, error }] = useMutation(LIKE_POST, {
     variables: {
@@ -50,7 +49,7 @@ const PostCard: React.FC<PostCardInterface> = ({
       postId: id,
     },
     onCompleted: (data) => {
-      setLikeCount(data?.addLike?.likesCount)
+      setLikeCount(data?.addLike?.likesCount);
       setLiked(true);
     },
     onError: (error) => {
@@ -61,7 +60,10 @@ const PostCard: React.FC<PostCardInterface> = ({
     },
   });
 
-  const [addComment, { data: commentData, loading: loadingComment, error: commentError }] = useMutation(ADD_COMMENT, {
+  const [
+    addComment,
+    { data: commentData, loading: loadingComment, error: commentError },
+  ] = useMutation(ADD_COMMENT, {
     variables: {
       body: comment,
       username: user?.username,
@@ -69,7 +71,7 @@ const PostCard: React.FC<PostCardInterface> = ({
       postId: id,
     },
     onCompleted: (data) => {
-      setComments(data?.addComment)
+      setComments(data?.addComment);
       notification.success({
         message: "Comment Added",
         placement: "topRight",
@@ -97,13 +99,18 @@ const PostCard: React.FC<PostCardInterface> = ({
 
   const handleCommentAdd = async () => {
     try {
-      await addComment()
+      await addComment();
     } catch (error) {
       console.log(error);
     }
-  }
+  };
 
-  if(loading || loadingComment) return <Skeleton active={loading}/>
+  if (loading || loadingComment)
+    return (
+      <div className="w-full min-h-screen flex flex-col justify-center items-center">
+        <Spin className="!text-white" />
+      </div>
+    );
 
   return (
     <Card
@@ -141,12 +148,18 @@ const PostCard: React.FC<PostCardInterface> = ({
             <p>{likeCount.toString()}</p>
           </div>
           <div className="flex flex-col justify-center items-center gap-2">
-            <FaRegComment onClick={() => showCommentInput((prev) => !prev)}/>
+            <FaRegComment onClick={() => showCommentInput((prev) => !prev)} />
             <p>{allComments.length.toString()}</p>
           </div>
         </div>
       </div>
-      {commentInput && <CommentInput onChange={(val: string) => setComment(val)} onClick={handleCommentAdd} comments={allComments} />}
+      {commentInput && (
+        <CommentInput
+          onChange={(val: string) => setComment(val)}
+          onClick={handleCommentAdd}
+          comments={allComments}
+        />
+      )}
     </Card>
   );
 };

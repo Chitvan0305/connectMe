@@ -81,7 +81,11 @@ function App() {
   }, [error, navigate]);
 
   if (userLoading || postsLoading) {
-    return <Spin />;
+    return (
+      <div className="w-full min-h-screen flex flex-col justify-center items-center">
+        <Spin className="!text-white" />
+      </div>
+    );
   }
 
   if (error) {
