@@ -9,9 +9,13 @@ import dotenv from "dotenv";
 import bodyParser from "body-parser";
 import querySchema from "./src/schema.js";
 import resolvers from "./src/controllers/resolvers.js";
+import { fileURLToPath } from 'url';
 import path from "path";
 
 dotenv.config();
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const app = express();
 const httpServer = http.createServer(app);
