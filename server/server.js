@@ -9,6 +9,7 @@ import dotenv from "dotenv";
 import bodyParser from "body-parser";
 import querySchema from "./src/schema.js";
 import resolvers from "./src/controllers/resolvers.js";
+import path from "path";
 
 dotenv.config();
 
@@ -23,6 +24,8 @@ const server = new ApolloServer({
 app.use(bodyParser.json());
 app.use(cors());
 
+app.use(express.static(path.join(__dirname, '../client/dist')));
+
 await server.start();
 
 app.use(
@@ -31,6 +34,10 @@ app.use(
     context: ({ req, res }) => ({ req, res }),
   })
 );
+
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, '../client/dist/index.html'));
+});
 
 const PORT = process.env.PORT || 5000;
 
