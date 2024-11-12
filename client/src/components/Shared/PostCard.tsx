@@ -133,7 +133,7 @@ const PostCard: React.FC<PostCardInterface> = ({
               {content} <br />{" "}
               {tags && tags.length > 0 && (
                 <span className="font-semibold flex gap-1 items-center">
-                  <FaUserTag color="#fff" size={12} />{tags.map((tag) => tag?.username).join(",")}
+                  <FaUserTag color="#333" size={12} />{tags.map((tag) => tag?.username).join(",")}
                 </span>
               )}
             </p>

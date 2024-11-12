@@ -12,7 +12,7 @@ import { useSelector } from "react-redux";
 interface UserTabProps {
   _id: string;
   username: string;
-  followers: string[]; 
+  followers: {_id: string}[]; 
 }
 
 const UserTab: React.FC<UserTabProps> = ({ _id, username, followers }) => {
@@ -22,12 +22,12 @@ const UserTab: React.FC<UserTabProps> = ({ _id, username, followers }) => {
   const [isFollower, setFollower] = useState<boolean>(false);
 
   const checkUser = useMemo(() => {
-    return followers.includes(userData?._id);
+    return followers.filter((follower) => follower?._id === userData?._id).length > 0;
   }, [followers, userData]);
 
   useEffect(() => {
     setFollower(checkUser);
-  }, [checkUser]);
+  }, []);
 
   const [addUser] = useMutation(ADD_FOLLOWERS, {
     variables: {

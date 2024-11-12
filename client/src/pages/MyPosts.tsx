@@ -49,7 +49,7 @@ const MyPosts = () => {
     );
   }
   return (
-    <AppLayout isLoading={posts.length == 0} isHome={true}>
+    <AppLayout isLoading={loading} isHome={true}>
       <section className="flex flex-col md:flex-row md:justify-start w-full md:w-auto gap-3 mt-4 mb-[70px]">
         {posts.length > 0 ? (
           posts.map((post: PostData, index: number) => (

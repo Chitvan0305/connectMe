@@ -70,7 +70,7 @@ const AppLayout: React.FC<LayoutProps> = ({
           button
         )}
       </header>
-      <main className="w-full flex flex-col flex-1 justify-center items-center min-h-fit">
+      <main className="w-full flex flex-col flex-1 justify-center items-center min-h-fit overflow-auto">
         {isLoading ? <Skeleton active={isLoading as boolean} /> : children}
       </main>
       {isHome && (
